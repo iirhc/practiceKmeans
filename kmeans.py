@@ -19,19 +19,22 @@ for p in range(k):
     newgroups.append([])
     print(points[p])
     distances.append(0.0)
-#os.system("pause")
+#points = [iris[0][:-1], iris[1][:-1], iris[2][:-1]]
+os.system("pause")
 
 # this should be first time clusters
 groups[0] = iris
 
-for i in range(10):
+for i in range(300):
     for groupNo in range(k):
         for dataNo in range(len(groups[groupNo])):
-            distances[groupNo] = 0
             for centerNo in range(k):
+                distances[centerNo] = 0
                 for diamNo in range(diam):
                     distances[centerNo] += (float(groups[groupNo][dataNo][diamNo])-float(points[centerNo][diamNo]))**2
                 distances[centerNo] = math.sqrt(distances[centerNo])
+            #print(distances)
+            #os.system("pause")
             classify = distances.index(min(distances))
             newgroups[classify].append(groups[groupNo][dataNo])
     groups = newgroups
@@ -40,6 +43,7 @@ for i in range(10):
             total = 0
             for dataNo in range(len(newgroups[groupNo])):
                 total += float(newgroups[groupNo][dataNo][diamNo])
+            #if len(newgroups[groupNo])!=0:
             avg = total/len(newgroups[groupNo])
             points[groupNo][diamNo] = avg
     newgroups = [[],[],[]]
