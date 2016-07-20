@@ -1,6 +1,7 @@
 import random
 import math
 import os
+import copy
 
 name = 'iris.data.txt'
 iris = []
@@ -10,20 +11,22 @@ for line in open(name, 'r', encoding='UTF-8'):
 k = 3
 diam = 4
 points = []
+lastpoints = []
 groups = []
 newgroups = []
 distances = [] #distance of the point to each group center
 for p in range(k):
     points.append(iris[random.randint(0,len(iris))][:-1])
+    lastpoints.append([])
+    for d in range(diam):
+        lastpoints[p].append(0)
     groups.append([])
     newgroups.append([])
     print(points[p])
     distances.append(0.0)
-#points = [iris[0][:-1], iris[1][:-1], iris[2][:-1]]
-os.system("pause")
 
-# this should be first time clusters
 groups[0] = iris
+count = 0
 
 for i in range(300):
     for groupNo in range(k):
@@ -44,24 +47,22 @@ for i in range(300):
             for dataNo in range(len(newgroups[groupNo])):
                 total += float(newgroups[groupNo][dataNo][diamNo])
             #if len(newgroups[groupNo])!=0:
-            avg = total/len(newgroups[groupNo])
-            points[groupNo][diamNo] = avg
+            points[groupNo][diamNo] = total/len(newgroups[groupNo])
+    diff = 0
+    for groupNo in range(k):
+        for diamNo in range(diam):
+            diff += abs(float(points[groupNo][diamNo])-float(lastpoints[groupNo][diamNo]))
     newgroups = [[],[],[]]
-    for j in range(k):
-        print(points[j])
-    for j in range(k):
-        print(len(groups[j]))
-    print("=============")
-"""
-for itemNum in range(len(iris)):
-    for groupNum in range(k):
-        distances[groupNum] = 0
-        for diamNum in range(diam):
-            distances[groupNum] += (float(iris[itemNum][diamNum]) - points[groupNum][diamNum])**2
-        distances[groupNum] = math.sqrt(distances[groupNum])
-    groups[distances.index(min(distances))].append(iris[itemNum])
-"""
-"""
+    print(diff)
+    if diff < 0.000000000001:
+        break
+    lastpoints = copy.deepcopy(points)
+    count+=1
+
+for j in range(k):
+    print(points[j])
 for j in range(k):
     print(len(groups[j]))
-"""
+
+print(count)
+print("=============")
