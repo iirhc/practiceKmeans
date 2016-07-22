@@ -2,6 +2,7 @@ import copy
 import math
 import random
 import os
+import matplotlib.pyplot as plt
 
 def calcDistance(a, b):
     diam = len(a)
@@ -46,14 +47,12 @@ while len(points) < k:
         points.append(rn)
 # initialize
 for p in range(k):
-    points[p] = iris[points[p]][:-1]
+    points[p] = iris[points[p]][:4]
     print(points[p]) # show initail group center points
-    lastpoints.append([])
-    for d in range(diam):
-        lastpoints[p].append(0)
     groups.append([])
-    newgroups.append([])
     distances.append(0)
+lastpoints = copy.deepcopy(points)
+newgroups = copy.deepcopy(groups)
 groups[0] = copy.deepcopy(iris)
 count = 0
 
@@ -61,11 +60,11 @@ count = 0
 for i in range(300):
     # cluster
     for groupNo in range(k):
-        for dataNo in range(len(groups[groupNo])):
+        for data in groups[groupNo]:
             for centerNo in range(k):
-                distances[centerNo] = calcDistance(groups[groupNo][dataNo][:-1], points[centerNo])
+                distances[centerNo] = calcDistance(data[:4], points[centerNo])
             classify = distances.index(min(distances))
-            newgroups[classify].append(groups[groupNo][dataNo])
+            newgroups[classify].append(data)
     groups = copy.deepcopy(newgroups)
     for g in range(k):
         newgroups[g] = []
@@ -92,3 +91,29 @@ for j in range(k):
 # show times of iterating
 print(count)
 print("=============")
+
+# initialize pyplot
+todraw = []
+for g in range(k):
+    todraw.append([])
+xy = [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
+color = ['r', 'g', 'b']
+x_min, x_max = 0, 10
+y_min, y_max = 0, 5
+plt.xlim(x_min, x_max)
+plt.ylim(y_min, y_max)
+plt.xticks(())
+plt.yticks(())
+
+# draw with scatter
+for f in range(len(xy)):
+    plt.figure(f+1, figsize=(8, 6))
+    for g in range(k):
+        todraw[g] = []
+    for groupNo in range(k):
+        for data in groups[groupNo]:
+            todraw[groupNo].append([data[xy[f][0]-1], data[xy[f][1]-1]])
+    for groupNo in range(k):
+        for drawdata in todraw[groupNo]:
+            plt.scatter(drawdata[0], drawdata[1], c = color[groupNo])
+plt.show()
