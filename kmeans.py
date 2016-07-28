@@ -40,6 +40,9 @@ lastpoints = []
 groups = []
 newgroups = []
 distances = [] # distance of the point to each group center
+
+# set the rand seed
+random.seed(1)
 # choose random k numbers as start points
 while len(points) < k:
     rn = random.randint(0, len(iris))
@@ -76,7 +79,7 @@ for i in range(300):
     for groupNo in range(k):
         diff += calcDistance(points[groupNo], lastpoints[groupNo])
     print(diff) # show total group center points moving distance every iteration
-    if diff < 0.000000000001:
+    if diff < 0.0000001:
         break
     lastpoints = copy.deepcopy(points)
     # count times of iterating
